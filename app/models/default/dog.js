@@ -1,9 +1,9 @@
 'use strict'
 
-var mongoose = require('mongoose')
-var Schema = mongoose.Schema
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
-var DogSchema = new Schema({
+let DogSchema = new Schema({
   name: {
     type: String,
     required: true

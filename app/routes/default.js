@@ -2,11 +2,11 @@
 
 const express = require('express')
 let router = express.Router()
-var jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 
 // SYSTEM MIDDLEWARES
 const JWTAuth = (req, res, next) => {
-  var authorizationToken = req.headers['authorization']
+  const authorizationToken = req.headers['authorization']
   if (authorizationToken) {
     let tokens = authorizationToken.split(' ')
     jwt.verify(tokens[1], require('../../config').SECRET, (err, decoded) => {
@@ -26,20 +26,11 @@ const JWTAuth = (req, res, next) => {
 }
 
 router.get('/', JWTAuth, (req, res) => {
-  console.log(req.decoded)
   return res.json({ message: 'Welcome to our api!' })
 })
 
 // CUSTOM ROUTES
-let Routes = require('require-dir')('./')
-Object.keys(Routes).forEach((routeKey) => {
-  let actualRoute = Routes[routeKey]
-  Object.keys(actualRoute).forEach(routeUrl => {
-    Object.keys(actualRoute[routeUrl]).forEach(routeMethod => {
-      router.route(routeUrl)[routeMethod](actualRoute[routeUrl][routeMethod])
-    })
-  })
-})
+router = require('./user.js')(router)
 
 // DEFAULT ROUTES
 const Models = require('require-dir')('../models/default')

@@ -2,12 +2,12 @@
 
 const User = require('../models/custom/user')
 let modelAttributes = Object.keys(User.schema.paths).filter(key => key !== '__v' && key !== '_id')
-var jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 
 
-module.exports = {
-  '/singup': {
-    'post': (req, res) => {
+module.exports = (router) => {
+  router.route('/singup')
+    .post((req, res) => {
       let instance = new User()
       modelAttributes.forEach((key) => {
         instance[key] = req.body[key] ? req.body[key] : instance[key]
@@ -18,10 +18,9 @@ module.exports = {
           token: jwt.sign(response, require('../../config').SECRET, {})
         }))
         .catch(error => res.status(403).send(error))
-    }
-  },
-  '/login': {
-    'post': (req, res) => {
+    })
+  router.route('/login')
+    .post((req, res) => {
       return User.findOne({ username: req.body.username })
         .then((user) => {
           if (!user) {
@@ -41,6 +40,6 @@ module.exports = {
         .catch((err) => {
           res.status(403).send(err.message)
         })
-    }
-  }
+    })
+  return router
 }
