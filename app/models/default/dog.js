@@ -3,11 +3,11 @@
 var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 
-var BearSchema = new Schema({
+var DogSchema = new Schema({
   name: {
     type: String,
     required: true
   }
 })
 
-module.exports = mongoose.model('Bear', BearSchema)
+module.exports = mongoose.model('Dog', DogSchema)
