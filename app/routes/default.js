@@ -13,10 +13,13 @@ router.use((req, res, next) => {
 router.get('/', (req, res) => res.json({ message: 'hooray! welcome to our api!!' }))
 
 // CUSTOM ROUTES
-const userRoute = require('./user.js')
-Object.keys(userRoute).forEach(routeUrl => {
-  Object.keys(userRoute[routeUrl]).forEach(routeMethod => {
-    router.route(routeUrl)[routeMethod](userRoute[routeUrl][routeMethod])
+let Routes = require('require-dir')('./')
+Object.keys(Routes).forEach((routeKey) => {
+  let actualRoute = Routes[routeKey]
+  Object.keys(actualRoute).forEach(routeUrl => {
+    Object.keys(actualRoute[routeUrl]).forEach(routeMethod => {
+      router.route(routeUrl)[routeMethod](actualRoute[routeUrl][routeMethod])
+    })
   })
 })
 

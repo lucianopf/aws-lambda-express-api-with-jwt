@@ -6,7 +6,9 @@ let modelAttributes = Object.keys(User.schema.paths).filter(key => key !== '__v'
 module.exports = {
   '/user': {
     'get': (req, res) => {
-      res.send(User)
+      return User.find()
+        .then(response => res.json(response))
+        .catch(error => res.status(500).send(error))
     }
   }
 }
