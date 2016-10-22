@@ -25,9 +25,7 @@ const JWTAuth = (req, res, next) => {
   }
 }
 
-router.get('/', JWTAuth, (req, res) => {
-  return res.json({ message: 'Welcome to our api!' })
-})
+router.get('/', (req, res) => res.json({ message: 'Welcome to our api!' }))
 
 // CUSTOM ROUTES
 router = require('./user.js')(router)
@@ -41,7 +39,7 @@ Object.keys(Models).forEach(modelKey => {
   let modelAttributes = Object.keys(Model.schema.paths).filter(key => key !== '__v' && key !== '_id')
 
   router.route('/' + instanceName)
-    .post((req, res) => {
+    .post(JWTAuth, (req, res) => {
       let instance = new Model()
       modelAttributes.forEach((key) => {
         instance[key] = req.body[key] ? req.body[key] : instance[key]
@@ -50,19 +48,19 @@ Object.keys(Models).forEach(modelKey => {
         .then(response => res.json({ message: modelName + ' was created successfully' }))
         .catch(error => res.status(403).send(error))
     })
-    .get((req, res) => {
+    .get(JWTAuth, (req, res) => {
       return Model.find()
         .then(response => res.json(response))
         .catch(error => res.status(500).send(error))
     })
 
   router.route('/' + instanceName + '/:id')
-    .get((req, res) => {
+    .get(JWTAuth, (req, res) => {
       return Model.findById(req.params.id)
         .then(response => res.json(response))
         .catch(error => res.status(500).send(error))
     })
-    .put((req, res) => {
+    .put(JWTAuth, (req, res) => {
       return Model.findById(req.params.id)
         .then(response => {
           response.name = req.body.name
@@ -71,8 +69,8 @@ Object.keys(Models).forEach(modelKey => {
         .then(response => res.json(response))
         .catch(error => res.status(403).send(error))
     })
-    .delete((req, res) => {
-      return Model.remove({ _id: req.params.id})
+    .delete(JWTAuth, (req, res) => {
+      return Model.remove({ _id: req.params.id })
         .then(response => res.json({ message: modelName + ' successfully deleted' }))
         .catch(error => res.status(403).send(error))
     })
