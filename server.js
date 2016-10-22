@@ -1,9 +1,10 @@
 'use strict'
 
-var express = require('express')
-var bodyParser = require('body-parser')
-var app = express()
-var morgan = require('morgan')
+const express = require('express')
+const bodyParser = require('body-parser')
+const app = express()
+const morgan = require('morgan')
+const mongoose = require('./app/utils/connection')
 
 app.use(morgan('dev'))
 

@@ -2,15 +2,33 @@
 
 const express = require('express')
 let router = express.Router()
-const mongoose = require('../utils/connection')
+var jwt = require('jsonwebtoken')
 
-// SYSTEM ROUTES
-router.use((req, res, next) => {
-  console.log('Here goes a logger.')
-  next()
+// SYSTEM MIDDLEWARES
+const JWTAuth = (req, res, next) => {
+  var authorizationToken = req.headers['authorization']
+  if (authorizationToken) {
+    let tokens = authorizationToken.split(' ')
+    jwt.verify(tokens[1], require('../../config').SECRET, (err, decoded) => {
+      if (err) {
+        return res.json({ success: false, message: 'Failed to authenticate token.' })
+      } else {
+        req.decoded = decoded._doc
+        next()
+      }
+    })
+  } else {
+    return res.status(403).send({
+      success: false,
+      message: 'No token provided.'
+    })
+  }
+}
+
+router.get('/', JWTAuth, (req, res) => {
+  console.log(req.decoded)
+  return res.json({ message: 'Welcome to our api!' })
 })
-
-router.get('/', (req, res) => res.json({ message: 'hooray! welcome to our api!!' }))
 
 // CUSTOM ROUTES
 let Routes = require('require-dir')('./')

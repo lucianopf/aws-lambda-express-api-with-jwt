@@ -15,6 +15,7 @@
     "bluebird": "^3.4.6",
     "body-parser": "~1.0.1",
     "express": "~4.0.0",
+    "jsonwebtoken": "^7.1.9",
     "mongoose": "*",
     "morgan": "~1.0.0",
     "require-dir": "^0.3.1"
