@@ -1,9 +1,9 @@
 {
-  "name": "node-api",
+  "name": "express-generic-api-with-jwt",
   "main": "server.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/scotch-io/node-token-authentication"
+    "url": "https://github.com/lucianopf/express-generic-api-with-jwt.git"
   },
   "scripts": {
     "start": "node server.js"

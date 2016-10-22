@@ -9,6 +9,15 @@ module.exports = {
       return User.find()
         .then(response => res.json(response))
         .catch(error => res.status(500).send(error))
+    },
+    'post': (req, res) => {
+      let instance = new User()
+      modelAttributes.forEach((key) => {
+        instance[key] = req.body[key] ? req.body[key] : instance[key]
+      })
+      return instance.save()
+        .then(response => res.json({ message: 'User was created successfully' }))
+        .catch(error => res.status(403).send(error))
     }
   }
 }
