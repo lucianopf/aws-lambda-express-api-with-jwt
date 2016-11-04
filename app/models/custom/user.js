@@ -2,7 +2,10 @@
 
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const bcrypt = require('bcrypt')
+const password = require('s-salt-pepper')
+password.configure({
+    pepper: require('../../../config.js').SECRET
+})
 
 let UserSchema = new Schema({
   name: { type: String, required: true },
@@ -15,25 +18,21 @@ UserSchema.pre('save', function (next) {
   if (!user.isModified('password')) {
     return next()
   }
-  bcrypt.genSalt(10, (err, salt) => {
+  password.hash(user.password, function (err, salt, hash) {
     if (err) {
       return next(err)
     }
-    bcrypt.hash(user.password, salt, (err, hash) => {
-      if (err) {
-        return next(err)
-      }
-      user.password = hash
-      next()
-    })
+    user.password = salt + '<||>' + hash
+    next()
   })
 })
 
 UserSchema.methods.comparePassword = function (candidatePassword, cb) {
-  bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
-    if (err) return cb(err)
-    cb(null, isMatch)
-  })
+  var usrPwd = this.password.split('<||>')
+  password.compare(candidatePassword, usrPwd[0], function(err, hash) {
+      if (usrPwd[1] === hash) return cb(err)
+      cb(null, isMatch)
+  });
 }
 
 module.exports = mongoose.model('User', UserSchema)
