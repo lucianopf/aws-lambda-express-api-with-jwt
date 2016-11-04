@@ -31,7 +31,7 @@ UserSchema.methods.comparePassword = function (candidatePassword, cb) {
   var usrPwd = this.password.split('<||>')
   password.compare(candidatePassword, usrPwd[0], function(err, hash) {
       if (usrPwd[1] === hash) return cb(err)
-      cb(null, isMatch)
+      cb(null, hash)
   });
 }
 
