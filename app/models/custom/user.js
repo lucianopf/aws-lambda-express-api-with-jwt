@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const password = require('s-salt-pepper')
 password.configure({
-    pepper: require('../../../config.js').SECRET
+  pepper: require('../../../keys.js').SECRET
 })
 
 let UserSchema = new Schema({
@@ -29,10 +29,10 @@ UserSchema.pre('save', function (next) {
 
 UserSchema.methods.comparePassword = function (candidatePassword, cb) {
   var usrPwd = this.password.split('<||>')
-  password.compare(candidatePassword, usrPwd[0], function(err, hash) {
-      if (usrPwd[1] === hash) return cb(err)
-      cb(null, hash)
-  });
+  password.compare(candidatePassword, usrPwd[0], function (err, hash) {
+    if (usrPwd[1] === hash) return cb(err)
+    cb(null, hash)
+  })
 }
 
 module.exports = mongoose.model('User', UserSchema)

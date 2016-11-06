@@ -15,7 +15,7 @@ module.exports = (router) => {
       return instance.save()
         .then(response => res.json({
           message: 'User was created successfully',
-          token: jwt.sign(response, require('../../config').SECRET, {})
+          token: jwt.sign(response, require('../../keys').SECRET, {})
         }))
         .catch(error => res.status(403).send(error))
     })
@@ -33,7 +33,7 @@ module.exports = (router) => {
             return res.json({
               success: true,
               message: 'Enjoy your token!',
-              token: jwt.sign(user, require('../../config').SECRET, {})
+              token: jwt.sign(user, require('../../keys').SECRET, {})
             })
           })
         })

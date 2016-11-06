@@ -3,13 +3,14 @@
 const express = require('express')
 let router = express.Router()
 const jwt = require('jsonwebtoken')
+const mongoose = require('../utils/connection')
 
 // SYSTEM MIDDLEWARES
 const JWTAuth = (req, res, next) => {
   const authorizationToken = req.headers['authorization']
   if (authorizationToken) {
     let tokens = authorizationToken.split(' ')
-    jwt.verify(tokens[1], require('../../config').SECRET, (err, decoded) => {
+    jwt.verify(tokens[1], require('../../keys').SECRET, (err, decoded) => {
       if (err) {
         return res.json({ success: false, message: 'Failed to authenticate token.' })
       } else {
@@ -24,7 +25,16 @@ const JWTAuth = (req, res, next) => {
     })
   }
 }
+const mongooseConnect = (req, res, next) => {
+  console.log('Connecting...')
+  mongoose.connect(next)
+}
+const mongooseDisconnect = (req, res) => {
+  console.log('Disconnecting...')
+  mongoose.disconnect()
+}
 
+router.use(mongooseConnect)
 router.get('/', (req, res) => res.json({ message: 'Welcome to our api!' }))
 
 // CUSTOM ROUTES
@@ -39,18 +49,25 @@ Object.keys(Models).forEach(modelKey => {
   let modelAttributes = Object.keys(Model.schema.paths).filter(key => key !== '__v' && key !== '_id')
 
   router.route('/' + instanceName)
-    .post(JWTAuth, (req, res) => {
+    .post(JWTAuth, (req, res, next) => {
       let instance = new Model()
       modelAttributes.forEach((key) => {
         instance[key] = req.body[key] ? req.body[key] : instance[key]
       })
       return instance.save()
-        .then(response => res.json({ message: modelName + ' was created successfully' }))
+        .then(response => {
+          res.json({ message: modelName + ' was created successfully' })
+          next()
+        })
         .catch(error => res.status(403).send(error))
     })
-    .get(JWTAuth, (req, res) => {
+    .get(JWTAuth, (req, res, next) => {
+      console.log('Getting this ' + instanceName)
       return Model.find()
-        .then(response => res.json(response))
+        .then(response => {
+          res.json(response)
+          next()
+        })
         .catch(error => res.status(500).send(error))
     })
 
@@ -75,5 +92,7 @@ Object.keys(Models).forEach(modelKey => {
         .catch(error => res.status(403).send(error))
     })
 })
+
+router.use(mongooseDisconnect)
 
 module.exports = router
