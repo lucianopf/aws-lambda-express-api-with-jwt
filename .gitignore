@@ -38,3 +38,5 @@ jspm_packages
 
 # Optional config ignore
 envs.js
+claudia.json
+lambda.js
