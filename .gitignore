@@ -35,8 +35,3 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
-
-# Optional config ignore
-envs.js
-claudia.json
-lambda.js
