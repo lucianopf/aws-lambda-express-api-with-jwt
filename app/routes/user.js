@@ -4,24 +4,29 @@ const User = require('../models/custom/user')
 let modelAttributes = Object.keys(User.schema.paths).filter(key => key !== '__v' && key !== '_id')
 const jwt = require('jsonwebtoken')
 
-
 module.exports = (router) => {
   router.route('/singup')
-    .post((req, res) => {
+    .post((req, res, next) => {
       let instance = new User()
       modelAttributes.forEach((key) => {
         instance[key] = req.body[key] ? req.body[key] : instance[key]
       })
       return instance.save()
-        .then(response => res.json({
-          message: 'User was created successfully',
-          token: jwt.sign(response, require('../../keys').SECRET, {})
-        }))
-        .catch(error => res.status(403).send(error))
+        .then(response => {
+          res.json({
+            message: 'User was created successfully',
+            token: jwt.sign(response, require('../../keys').SECRET, {})
+          })
+          next()
+        })
+        .catch(error => {
+          res.status(403).send(error)
+          next()
+        })
     })
   router.route('/login')
-    .post((req, res) => {
-      return User.findOne({ username: req.body.username })
+    .post((req, res, next) => {
+      User.findOne({ username: req.body.username })
         .then((user) => {
           if (!user) {
             throw new Error('User not found in database.')
@@ -30,15 +35,17 @@ module.exports = (router) => {
             if (err || !isMatch) {
               res.status(403).send('Wrong password for the provided user.')
             }
-            return res.json({
+            res.json({
               success: true,
               message: 'Enjoy your token!',
               token: jwt.sign(user, require('../../keys').SECRET, {})
             })
+            next()
           })
         })
         .catch((err) => {
           res.status(403).send(err.message)
+          next()
         })
     })
   return router

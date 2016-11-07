@@ -34,8 +34,9 @@ const mongooseDisconnect = (req, res) => {
   mongoose.disconnect()
 }
 
-router.use(mongooseConnect)
 router.get('/', (req, res) => res.json({ message: 'Welcome to our api!' }))
+
+router.use(mongooseConnect)
 
 // CUSTOM ROUTES
 router = require('./user.js')(router)
@@ -59,7 +60,10 @@ Object.keys(Models).forEach(modelKey => {
           res.json({ message: modelName + ' was created successfully' })
           next()
         })
-        .catch(error => res.status(403).send(error))
+        .catch(error => {
+          res.status(403).send(error)
+          next()
+        })
     })
     .get(JWTAuth, (req, res, next) => {
       console.log('Getting this ' + instanceName)
@@ -68,28 +72,49 @@ Object.keys(Models).forEach(modelKey => {
           res.json(response)
           next()
         })
-        .catch(error => res.status(500).send(error))
+        .catch(error => {
+          res.status(500).send(error)
+          next()
+        })
     })
 
   router.route('/' + instanceName + '/:id')
-    .get(JWTAuth, (req, res) => {
+    .get(JWTAuth, (req, res, next) => {
       return Model.findById(req.params.id)
-        .then(response => res.json(response))
-        .catch(error => res.status(500).send(error))
+        .then(response => {
+          res.json(response)
+          next()
+        })
+        .catch(error => {
+          res.status(500).send(error)
+          next()
+        })
     })
-    .put(JWTAuth, (req, res) => {
+    .put(JWTAuth, (req, res, next) => {
       return Model.findById(req.params.id)
         .then(response => {
           response.name = req.body.name
           return response.save()
         })
-        .then(response => res.json(response))
-        .catch(error => res.status(403).send(error))
+        .then(response => {
+          res.json(response)
+          next()
+        })
+        .catch(error => {
+          res.status(403).send(error)
+          next()
+        })
     })
-    .delete(JWTAuth, (req, res) => {
+    .delete(JWTAuth, (req, res, next) => {
       return Model.remove({ _id: req.params.id })
-        .then(response => res.json({ message: modelName + ' successfully deleted' }))
-        .catch(error => res.status(403).send(error))
+        .then(response => {
+          res.json({ message: modelName + ' successfully deleted' })
+          next()
+        })
+        .catch(error => {
+          res.status(403).send(error)
+          next()
+        })
     })
 })
 
