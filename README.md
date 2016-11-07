@@ -15,12 +15,13 @@ The main goal of this project is to serve as an entrypoint to developers build a
 - Enter into the project directory: `cd epress-generic-api-with-jwt`
 - Install dependencies: `npm install`
 - Setup your AWS credentials:
-    - Create the credentials file: .aws/credentials:
-        ```     
-        [claudia]
-        aws_access_key_id = YOUR_ACCESS_KEY
-        aws_secret_access_key = YOUR_ACCESS_SECRET
-        ```
+
+Create the credentials file: .aws/credentials:
+```     
+[claudia]
+aws_access_key_id = YOUR_ACCESS_KEY
+aws_secret_access_key = YOUR_ACCESS_SECRET
+```
 - Generate the Claudia proxy handler: `./node_modules/.bin/claudia generate-serverless-express-proxy --express-module server`
 - Make the 1st upload: `./node_modules/.bin/claudia create --handler lambda.handler --deploy-proxy-api --region us-east-1`
 
