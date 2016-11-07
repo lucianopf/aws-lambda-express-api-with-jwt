@@ -26,7 +26,7 @@ The main goal of this project is to serve as an entrypoint to developers build a
 
 ## Usage
 
--   As soon as the application has been updated you should update at AWS using the following command: `./node_modules/.bin/claudia update` 
+-   As soon as the application has been updated you should update at AWS using the following command: `npm run update` 
 -   The CLI response has the url endpoint so it can be tested via CURL, Postman...
 -   By default the `/api`, `/api/login` and `/api/singup` are the only endpoints without Authorization header.
 -   All other paths must have Authorization header with the following format "Bearer <Token>".
