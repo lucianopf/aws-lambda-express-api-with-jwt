@@ -11,7 +11,7 @@ The main goal of this project is to serve as an entrypoint to developers build a
 
 ## Installation
 
-- Clone the repo: `git clone https://github.com/lucianopf/epress-generic-api-with-jwt.git`
+- Clone the repo: `git clone https://github.com/lucianopf/aws-lambda-express-api-with-jwt.git`
 - Enter into the project directory: `cd epress-generic-api-with-jwt`
 - Install dependencies: `npm install`
 - Setup your AWS credentials:
