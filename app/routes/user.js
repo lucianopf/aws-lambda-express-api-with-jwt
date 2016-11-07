@@ -3,6 +3,8 @@
 const User = require('../models/custom/user')
 let modelAttributes = Object.keys(User.schema.paths).filter(key => key !== '__v' && key !== '_id')
 const jwt = require('jsonwebtoken')
+const config = require('../../keys')
+const EXPIRESIN = '4h'
 
 module.exports = (router) => {
   router.route('/singup')
@@ -15,7 +17,7 @@ module.exports = (router) => {
         .then(response => {
           res.json({
             message: 'User was created successfully',
-            token: jwt.sign(response, require('../../keys').SECRET, {})
+            token: jwt.sign(response, config.SECRET, { expiresIn: EXPIRESIN })
           })
           next()
         })
@@ -38,7 +40,7 @@ module.exports = (router) => {
             res.json({
               success: true,
               message: 'Enjoy your token!',
-              token: jwt.sign(user, require('../../keys').SECRET, {})
+              token: jwt.sign(user, config.SECRET, { expiresIn: EXPIRESIN })
             })
             next()
           })

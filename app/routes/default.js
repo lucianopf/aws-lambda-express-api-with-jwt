@@ -11,18 +11,20 @@ const JWTAuth = (req, res, next) => {
   if (authorizationToken) {
     let tokens = authorizationToken.split(' ')
     jwt.verify(tokens[1], require('../../keys').SECRET, (err, decoded) => {
-      if (err) {
-        return res.json({ success: false, message: 'Failed to authenticate token.' })
+      if (err || tokens[0] !== 'Bearer') {
+        res.json({ success: false, message: 'Failed to authenticate token.', err: err, token: tokens[0] })
+        next()
       } else {
         req.decoded = decoded._doc
         next()
       }
     })
   } else {
-    return res.status(403).send({
+    res.status(403).send({
       success: false,
       message: 'No token provided.'
     })
+    next()
   }
 }
 const mongooseConnect = (req, res, next) => {
