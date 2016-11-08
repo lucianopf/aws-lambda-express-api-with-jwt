@@ -12,7 +12,11 @@ const JWTAuth = (req, res, next) => {
     let tokens = authorizationToken.split(' ')
     jwt.verify(tokens[1], require('../../keys').SECRET, (err, decoded) => {
       if (err || tokens[0] !== 'Bearer') {
-        res.json({ success: false, message: 'Failed to authenticate token.', err: err, token: tokens[0] })
+        let message = 'Failed to authenticate token.'
+        if (err.name === 'TokenExpiredError') {
+          message = 'Token has expired, please login again.'
+        }
+        res.json({ success: false, message: message })
         next()
       } else {
         req.decoded = decoded._doc

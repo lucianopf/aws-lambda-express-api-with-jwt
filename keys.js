@@ -1,7 +1,7 @@
 module.exports = {
-  DBUSER: process.env.DBUSER || '',
-  DBPASSWORD: process.env.DBPASSWORD || '',
-  DBURL: process.env.DBURL || '',
-  DBNAME: process.env.DBNAME || '',
-  SECRET: process.env.SECRET || ''
+  DBUSER: process.env.DBUSER || 'oab',
+  DBPASSWORD: process.env.DBPASSWORD || 'facil',
+  DBURL: process.env.DBURL || 'ds061676.mlab.com:61676',
+  DBNAME: process.env.DBNAME || 'oab-facil',
+  SECRET: process.env.SECRET || 'oab-facil'
 }
